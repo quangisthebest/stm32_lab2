@@ -242,23 +242,43 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-    static int counter = 50;
-    static int status = 0;
+    static int counter_scan = 50;
+    static int counter_dot = 100;
+    static int current_led = 0;
 
-    counter--;
-    if (counter <= 0) {
-        counter = 50;
-        if (status == 0) {
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
-            display7SEG(1);
-            status = 1;
-        } else {
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
-            display7SEG(2);
-            status = 0;
+    counter_scan--;
+    if (counter_scan <= 0) {
+        counter_scan = 50;
+        switch (current_led) {
+            case 0:
+                HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+                HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9, GPIO_PIN_SET);
+                display7SEG(1);
+                break;
+            case 1:
+                HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+                HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6 | GPIO_PIN_8 | GPIO_PIN_9, GPIO_PIN_SET);
+                display7SEG(2);
+                break;
+            case 2:
+                HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+                HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_9, GPIO_PIN_SET);
+                display7SEG(3);
+                break;
+            case 3:
+                HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+                HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8, GPIO_PIN_SET);
+                display7SEG(0);
+                break;
         }
+        current_led++;
+        if (current_led > 3) current_led = 0;
+    }
+
+    counter_dot--;
+    if (counter_dot <= 0) {
+        counter_dot = 100;
+        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
     }
 }
 
