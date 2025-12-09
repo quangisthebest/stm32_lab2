@@ -37,13 +37,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  000161f3  00000000  00000000  0002ac98  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00009361  00000000  00000000  00040e8b  2**0
+ 17 .debug_line   0000935f  00000000  00000000  00040e8b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00081d9a  00000000  00000000  0004a1ec  2**0
+ 18 .debug_str    00081d9a  00000000  00000000  0004a1ea  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000053  00000000  00000000  000cbf86  2**0
+ 19 .comment      00000053  00000000  00000000  000cbf84  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000025e8  00000000  00000000  000cbfdc  2**2
+ 20 .debug_frame  000025e8  00000000  00000000  000cbfd8  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -504,8 +504,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
  80003aa:	b082      	sub	sp, #8
  80003ac:	af00      	add	r7, sp, #0
  80003ae:	6078      	str	r0, [r7, #4]
-    static int counter = 50; // 50 lần ngắt * 10ms = 500ms
-    static int status = 0;   // 0: LED 1, 1: LED 2
+    static int counter = 50;
+    static int status = 0;
 
     counter--;
  80003b0:	4b1a      	ldr	r3, [pc, #104]	; (800041c <HAL_TIM_PeriodElapsedCallback+0x74>)
@@ -518,7 +518,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
  80003bc:	681b      	ldr	r3, [r3, #0]
  80003be:	2b00      	cmp	r3, #0
  80003c0:	dc27      	bgt.n	8000412 <HAL_TIM_PeriodElapsedCallback+0x6a>
-        counter = 50; // Reset đếm
+        counter = 50;
  80003c2:	4b16      	ldr	r3, [pc, #88]	; (800041c <HAL_TIM_PeriodElapsedCallback+0x74>)
  80003c4:	2232      	movs	r2, #50	; 0x32
  80003c6:	601a      	str	r2, [r3, #0]
@@ -527,42 +527,41 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
  80003ca:	681b      	ldr	r3, [r3, #0]
  80003cc:	2b00      	cmp	r3, #0
  80003ce:	d110      	bne.n	80003f2 <HAL_TIM_PeriodElapsedCallback+0x4a>
-            // Bật LED 1 (EN0), Tắt LED 2 (EN1) - Giả sử EN nối PA6, PA7
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET); // EN0 ON
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
  80003d0:	2200      	movs	r2, #0
  80003d2:	2140      	movs	r1, #64	; 0x40
  80003d4:	4813      	ldr	r0, [pc, #76]	; (8000424 <HAL_TIM_PeriodElapsedCallback+0x7c>)
  80003d6:	f000 fbcb 	bl	8000b70 <HAL_GPIO_WritePin>
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);   // EN1 OFF
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
  80003da:	2201      	movs	r2, #1
  80003dc:	2180      	movs	r1, #128	; 0x80
  80003de:	4811      	ldr	r0, [pc, #68]	; (8000424 <HAL_TIM_PeriodElapsedCallback+0x7c>)
  80003e0:	f000 fbc6 	bl	8000b70 <HAL_GPIO_WritePin>
-            display7SEG(1); // Hiển thị số 1
+            display7SEG(1);
  80003e4:	2001      	movs	r0, #1
  80003e6:	f7ff feb1 	bl	800014c <display7SEG>
             status = 1;
  80003ea:	4b0d      	ldr	r3, [pc, #52]	; (8000420 <HAL_TIM_PeriodElapsedCallback+0x78>)
  80003ec:	2201      	movs	r2, #1
  80003ee:	601a      	str	r2, [r3, #0]
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET); // EN1 ON
-            display7SEG(2); // Hiển thị số 2
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+            display7SEG(2);
             status = 0;
         }
     }
 }
  80003f0:	e00f      	b.n	8000412 <HAL_TIM_PeriodElapsedCallback+0x6a>
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);   // EN0 OFF
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
  80003f2:	2201      	movs	r2, #1
  80003f4:	2140      	movs	r1, #64	; 0x40
  80003f6:	480b      	ldr	r0, [pc, #44]	; (8000424 <HAL_TIM_PeriodElapsedCallback+0x7c>)
  80003f8:	f000 fbba 	bl	8000b70 <HAL_GPIO_WritePin>
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET); // EN1 ON
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
  80003fc:	2200      	movs	r2, #0
  80003fe:	2180      	movs	r1, #128	; 0x80
  8000400:	4808      	ldr	r0, [pc, #32]	; (8000424 <HAL_TIM_PeriodElapsedCallback+0x7c>)
  8000402:	f000 fbb5 	bl	8000b70 <HAL_GPIO_WritePin>
-            display7SEG(2); // Hiển thị số 2
+            display7SEG(2);
  8000406:	2002      	movs	r0, #2
  8000408:	f7ff fea0 	bl	800014c <display7SEG>
             status = 0;
