@@ -122,6 +122,12 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
+  void updateClockBuffer() {
+      led_buffer[0] = hour / 10;
+      led_buffer[1] = hour % 10;
+      led_buffer[2] = minute / 10;
+      led_buffer[3] = minute % 10;
+  }
   /* USER CODE BEGIN WHILE */
   while (1)
   {
