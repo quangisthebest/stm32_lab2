@@ -19,7 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "display7seg.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -222,57 +222,35 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void display7SEG(int num) {
-    char segments[10] = {
-        0b11000000,  // 0: a,b,c,d,e,f sáng
-        0b11111001,  // 1: b,c sáng
-        0b10100100,  // 2: a,b,d,e,g sáng
-        0b10110000,  // 3: a,b,c,d,g sáng
-        0b10011001,  // 4: b,c,f,g sáng
-        0b10010010,  // 5: a,c,d,f,g sáng
-        0b10000010,  // 6: a,c,d,e,f,g sáng
-        0b11111000,  // 7: a,b,c sáng
-        0b10000000,  // 8: a,b,c,d,e,f,g sáng
-        0b10010000   // 9: a,b,c,d,f,g sáng
-    };
+int cnt = 0;
+int sel = 0;
 
-    if (num >= 0 && num <= 9) {
-        char code = segments[num];
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, (code >> 0) & 0x01); //a
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, (code >> 1) & 0x01); // b
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, (code >> 2) & 0x01); // c
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, (code >> 3) & 0x01); //d
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, (code >> 4) & 0x01); //e
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, (code >> 5) & 0x01); //f
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, (code >> 6) & 0x01); //g
-    }
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+ if(htim->Instance == TIM2)
+ {
+   cnt++;
+   if(cnt >= 50) // 500ms
+   {
+     cnt = 0;
+     sel ^= 1;
+
+     if(sel == 0)
+     {
+       display7SEG(1);
+       HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+       HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+     }
+     else
+     {
+       display7SEG(2);
+       HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+       HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+     }
+   }
+ }
 }
-int timer2_counter = 0;
-int led_state = 0; // 0: hiển thị LED 1, 1: hiển thị LED 2
-const int TIMER2_CYCLE = 10; // Chu kỳ ngắt là 10ms
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-    if (timer2_counter > 0) {
-        timer2_counter--;
-    }
-
-    if (timer2_counter <= 0) {
-        timer2_counter = 500 / TIMER2_CYCLE;
-
-        if (led_state == 0) {
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-            display7SEG(1);
-            led_state = 1;
-        } else {
-            // Tắt LED 1, bật LED 2
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
-            display7SEG(2);
-            led_state = 0;
-        }
-    }
-}
 /* USER CODE END 4 */
 
 /**
