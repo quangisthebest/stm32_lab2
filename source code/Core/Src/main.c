@@ -83,14 +83,45 @@ void display7SEG(int num) {
     }
 }
 void update7SEG(int index) {
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9, GPIO_PIN_SET);
-    display7SEG(led_buffer[index]);
     switch (index) {
-        case 0: HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET); break;
-        case 1: HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET); break;
-        case 2: HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET); break;
-        case 3: HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET); break;
+        case 0:
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+            display7SEG(led_buffer[0]);
+            break;
+        case 1:
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+            display7SEG(led_buffer[1]);
+            break;
+        case 2:
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+            display7SEG(led_buffer[2]);
+            break;
+        case 3:
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+            display7SEG(led_buffer[3]);
+            break;
+        default:
+            break;
     }
+}
+int hour = 15, minute = 8, second = 50;
+void updateClockBuffer() {
+    led_buffer[0] = hour / 10;
+    led_buffer[1] = hour % 10;
+    led_buffer[2] = minute / 10;
+    led_buffer[3] = minute % 10;
 }
 int main(void)
 {
@@ -122,18 +153,24 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  void updateClockBuffer() {
-      led_buffer[0] = hour / 10;
-      led_buffer[1] = hour % 10;
-      led_buffer[2] = minute / 10;
-      led_buffer[3] = minute % 10;
-  }
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
+  /* USER CODE BEGIN WHILE */
+  while (1) {
+      second++;
+      if (second >= 60) {
+          second = 0;
+          minute++;
+      }
+      if (minute >= 60) {
+          minute = 0;
+          hour++;
+      }
+      if (hour >= 24) {
+          hour = 0;
+      }
+
+      updateClockBuffer();
+      HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
