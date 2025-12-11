@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  00020010  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00008596  00000000  00000000  00020039  2**0
+ 12 .debug_info   00008550  00000000  00000000  00020039  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 000014fa  00000000  00000000  000285cf  2**0
+ 13 .debug_abbrev 000014fa  00000000  00000000  00028589  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000938  00000000  00000000  00029ad0  2**3
+ 14 .debug_aranges 00000938  00000000  00000000  00029a88  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000890  00000000  00000000  0002a408  2**3
+ 15 .debug_ranges 00000890  00000000  00000000  0002a3c0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  000161f3  00000000  00000000  0002ac98  2**0
+ 16 .debug_macro  000161f3  00000000  00000000  0002ac50  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0000935f  00000000  00000000  00040e8b  2**0
+ 17 .debug_line   0000935f  00000000  00000000  00040e43  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00081d9a  00000000  00000000  0004a1ea  2**0
+ 18 .debug_str    00081d6c  00000000  00000000  0004a1a2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000053  00000000  00000000  000cbf84  2**0
+ 19 .comment      00000053  00000000  00000000  000cbf0e  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000025e8  00000000  00000000  000cbfd8  2**2
+ 20 .debug_frame  000025e8  00000000  00000000  000cbf64  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -77,11 +77,11 @@ Disassembly of section .text:
  8000148:	08001b68 	.word	0x08001b68
 
 0800014c <display7SEG>:
+
+const int MAX_LED = 4;
+int index_led = 0;
 int led_buffer[4] = {1, 2, 3, 4};
 
-const int MAX_LED_MATRIX = 8;
-int index_led_matrix = 0;
-uint8_t matrix_buffer[8] = {0x00, 0xFC, 0xFE, 0x33, 0x33, 0xFE, 0xFC, 0x00};
 void display7SEG(int num) {
  800014c:	b580      	push	{r7, lr}
  800014e:	b086      	sub	sp, #24
